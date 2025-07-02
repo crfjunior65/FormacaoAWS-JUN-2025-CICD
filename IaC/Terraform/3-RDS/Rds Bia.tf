@@ -7,8 +7,8 @@ resource "aws_db_instance" "db-Projeto" {
   deletion_protection = false
   identifier          = var.environment
   multi_az            = false
-  username            = "postgres"
-  password            = "postgres"
+  username            = "postgres" # O nome de usuário não pode ser alterado após a criação para algumas engines.
+  password            = random_password.db_master_password.result
   #parameter_group_name = "default.mysql8.0"
   skip_final_snapshot = true
   #5432 PostGres
@@ -33,6 +33,10 @@ resource "aws_db_instance" "db-Projeto" {
     "Management"  = "Terraform"
     "Name"        = "db-${var.environment}"
     "Terraform"   = "true"
+  }
+
+  lifecycle {
+    ignore_changes = [password]
   }
 }
 
